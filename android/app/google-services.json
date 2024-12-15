@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "954337955587",
+    "project_id": "kodkoy-flutter-version",
+    "storage_bucket": "kodkoy-flutter-version.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:954337955587:android:ecdb65070bcf99c5d46336",
+        "android_client_info": {
+          "package_name": "com.aliosman.kodkoy.kodkoy"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwZsr7aNZelpC6vLVxirANVVAO3F69q3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
