@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class SharePage extends StatefulWidget {
-  const SharePage({super.key});
+  String userName;
+  SharePage({super.key, required this.userName});
 
   @override
   State<StatefulWidget> createState() => _SharePageState();
@@ -24,7 +25,6 @@ class _SharePageState extends State<SharePage> {
   void initState() {
     super.initState();
 
-    // Kullanıcının yorum yazarken _comment'i güncellemesi için listener ekleniyor
     commentController.addListener(() {
       setState(() {
         _comment = commentController.text.trim();
@@ -54,30 +54,29 @@ class _SharePageState extends State<SharePage> {
       return;
     }
 
-    // Kullanıcı adını çevirmek
-    String userName;
-    if (_auth.currentUser?.email != null) {
-      String email = _auth.currentUser!.email!;
-      userName = email.split('@')[0];
-    } else {
-      userName = "null";
-    }
-
     try {
       // Resmi Base64 string'e çevir
       final bytes = await _selectedImage!.readAsBytes();
       final base64Image = base64Encode(bytes);
+      FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
       // Kullanıcı UUID'sini al
       final userId = _auth.currentUser?.uid;
 
-      // Firestore'a kaydet
-      await FirebaseFirestore.instance.collection('Feeds').doc(userId).set({
+      // Firestore'a rastgele uuid ile kaydet
+      String uuid = const Uuid().v4();
+      await fireStore.collection('Feeds').doc(uuid).set({
         'image': base64Image,
         'comment': _comment,
         'timestamp': FieldValue.serverTimestamp(),
-        'userName': userName,
+        'userName': widget.userName,
+        'userUuid': userId
       });
+
+      // Kaydedilen gönderinin referansını kullanıcıya kaydet
+      await FirebaseFirestore.instance.collection('Users').doc(userId).set({
+        'postRef': FieldValue.arrayUnion([uuid]) // Mevcut diziye yeni UUID eklenir
+      }, SetOptions(merge: true)); // Mevcut belgeyi bozmadan güncelle
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Paylaşım başarıyla yüklendi!")),
@@ -100,7 +99,7 @@ class _SharePageState extends State<SharePage> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(23, 32, 27, 1.0),
-        automaticallyImplyLeading: false,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "KODKOY",
           style: TextStyle(
@@ -118,14 +117,13 @@ class _SharePageState extends State<SharePage> {
           children: [
             const SizedBox(height: 24),
 
-            const Padding(
-              padding: EdgeInsets.only(left: 34),
+            Padding(
+              padding: const EdgeInsets.only(left: 34),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    "@isim",
-                    style: TextStyle(
+                  Text(widget.userName,
+                    style: const TextStyle(
                       fontFamily: "FiraCode-Regular",
                       color: Colors.white,
                       fontSize: 14,
@@ -214,7 +212,7 @@ class _SharePageState extends State<SharePage> {
               ),
             ),
 
-            const SizedBox(height: 300),
+            const SizedBox(height: 250),
 
             Padding(
               padding: const EdgeInsets.only(left: 34, right: 34),
@@ -240,7 +238,7 @@ class _SharePageState extends State<SharePage> {
                             fontFamily: "FiraCode-Semibold")),
                   ),
 
-                  const SizedBox(width: 24,),
+                  const SizedBox(width: 24),
 
                   // Takipçilere olarak gönder
                   SizedBox(

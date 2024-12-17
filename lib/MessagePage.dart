@@ -10,8 +10,21 @@ class MessagePage extends StatefulWidget {
 class _MessagePageState extends State<MessagePage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Column(
+    return Scaffold(
+      backgroundColor: const Color.fromRGBO(23, 32, 27, 1.0),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromRGBO(23, 32, 27, 1.0),
+        title: const Text("Mesajlar",
+          style: TextStyle(
+            color: Color.fromRGBO(186, 219, 215, 1.0),
+            fontSize: 36,
+            fontFamily: "montserrat",
+            letterSpacing: 1.0,
+        ),
+        )
+      ),
+      body: const Column(
         children: [
 
         ],
