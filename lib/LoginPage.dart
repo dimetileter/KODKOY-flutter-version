@@ -11,12 +11,13 @@ class LoginPage extends StatelessWidget {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+
   Future<void> loginUser(BuildContext context, String email, String password) async {
     try {
       // Firebase ile giriş işlemi
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       String? displayName = _auth.currentUser?.displayName.toString() ?? "Kullanıcı";
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const MainPage() ));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage() ));
 
     } catch (e) {
       // Hata mesajı

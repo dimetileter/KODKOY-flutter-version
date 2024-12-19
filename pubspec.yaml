@@ -38,6 +38,7 @@ dependencies:
   cloud_firestore:
   image_picker: ^1.0.0
   uuid: ^3.0.7
+  intl: ^0.18.0
 
 
 

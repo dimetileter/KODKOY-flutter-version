@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kodkoy/FeedPage.dart';
+import 'package:kodkoy/LoginPage.dart';
 import 'package:kodkoy/MessagePage.dart';
 import 'package:kodkoy/ProfilePage.dart';
 import 'package:kodkoy/SharePage.dart';
@@ -15,13 +16,14 @@ class MainPage extends StatefulWidget {
 
 
 class _MainPageState extends State<MainPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   String? userName;
-
 
   @override
   void initState() {
     super.initState();
     // Kullanıcının emailini al
+
     User? currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser?.email != null) {
       String email = currentUser!.email!;
@@ -61,6 +63,25 @@ class _MainPageState extends State<MainPage> {
               child: Row(
                   children : [
 
+                    // Çıkış butonu butonu
+                    IconButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                          _auth.signOut();
+                        },
+                        style: IconButton.styleFrom(
+                          side: const BorderSide(color: Color.fromRGBO(186, 219, 215, 1.0), width: 1),
+                          backgroundColor: const Color.fromRGBO(75, 84, 93, 0.45),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(8))
+                          ),
+                        ),
+                        icon: const Icon(Icons.exit_to_app, size: 20, color: Colors.white,)
+                    ),
+
+                    const SizedBox(width: 10),
+
+                    // Mesajlar butonu
                     IconButton(
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const MessagePage() ));
@@ -77,6 +98,7 @@ class _MainPageState extends State<MainPage> {
 
                     const SizedBox(width: 10),
 
+                    // Paylaşım butonu
                     IconButton(
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (context) => SharePage(userName: userName!) ));
@@ -90,6 +112,8 @@ class _MainPageState extends State<MainPage> {
                       ),
                       icon: const Icon(Icons.add, size: 20, color: Colors.white,)
                   ),
+
+                    const SizedBox(width: 10),
                 ]
               ),
             )

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kodkoy/FollowsPage.dart';
 import 'package:uuid/uuid.dart';
 
 class SharePage extends StatefulWidget {
@@ -245,18 +246,39 @@ class _SharePageState extends State<SharePage> {
                     width: 38,
                     child: IconButton(
                       onPressed: () {
-                        // Takipçilere gönderme işlemi
+                        if (_selectedImage != null && _comment.isNotEmpty) {
+                          // Resmi Base64 string'e çevir
+                          _selectedImage!.readAsBytes().then((bytes) {
+                            final base64Image = base64Encode(bytes);
+
+                            // Takipçiler sayfasına yönlendir
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FollowsPage(
+                                  image: base64Image,
+                                  comment: _comment,
+                                ),
+                              ),
+                            );
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Resim ve yorum gerekli!")),
+                          );
+                        }
                       },
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(color: Color.fromRGBO(186, 219, 215, 1.0), width: 1),
-                        backgroundColor: const Color.fromRGBO(75, 84, 93, 0.45),
-                        shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))
-                      )
-                    ),
+                      style: IconButton.styleFrom(
+                        side: const BorderSide(
+                            color: Color.fromRGBO(186, 219, 215, 1.0), width: 1),
+                        backgroundColor:
+                        const Color.fromRGBO(75, 84, 93, 0.45),
+                      ),
                       icon: const Icon(Icons.send, color: Colors.white),
                     ),
                   ),
+
+
                 ],
               ),
             )

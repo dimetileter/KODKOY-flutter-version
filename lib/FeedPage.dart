@@ -47,7 +47,7 @@ class _FeedPageState extends State<FeedPage> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(23, 32, 27, 1.0),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator(color: Colors.white))
           : ListView.builder(
         itemCount: feeds.length, // Listedeki öğe sayısını alıyoruz.
         itemBuilder: (context, index) {
