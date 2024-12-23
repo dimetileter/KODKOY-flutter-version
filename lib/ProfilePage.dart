@@ -193,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     shape: BoxShape.circle,
                     image: DecorationImage(
                       image: _selectedImage == null
-                          ? const NetworkImage("https://via.placeholder.com/150")
+                          ? const AssetImage("assets/default_profile.png")
                           : FileImage(_selectedImage!) as ImageProvider,
                       fit: BoxFit.cover,
                     ),
@@ -320,6 +320,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         Text(
                           post['userName'] ?? 'Bilinmeyen Kullanıcı',
                           style: const TextStyle(
@@ -338,8 +339,10 @@ class _ProfilePageState extends State<ProfilePage> {
                             fit: BoxFit.cover, // Görüntünün kutuya sığması için ayar
                           )
                         else
-                          const Icon(Icons.broken_image, size: 200, color: Colors.grey),
+                          const Icon(Icons.broken_image, size: 200, color: Colors.grey), // Resim alınamazsa
+
                         const SizedBox(height: 8),
+
                         Text(
                           post['comment'] ?? '',
                           style: const TextStyle(fontSize: 14),

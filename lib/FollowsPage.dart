@@ -95,12 +95,32 @@ class _FollowsPageState extends State<FollowsPage> {
     }
   }
 
-  void _unfollowUser(String userUuid) {
-    // Kullanıcıyı takipten çıkarma mantığı
-    setState(() {
-      _follows.removeWhere((user) => user['userUuid'] == userUuid);
-    });
-    print("$userUuid takipten çıkarıldı!"); //testten sonra silinecek
+  void _unfollowUser(String userUuid) async {
+    String cuUuid = _auth.currentUser!.uid;
+
+    try {
+      // Kullanıcının dokümanını al
+      DocumentReference userDoc = _firestore.collection('Users').doc(cuUuid);
+
+      // followsRef listesini güncelle
+      await userDoc.update({
+        'followsRef': FieldValue.arrayRemove([userUuid])
+      });
+
+      // Listeyi güncelleştitr
+      setState(() {
+        _follows.removeWhere((user) => user['userUuid'] == userUuid);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Kullanıcı takipten çıkarıldı.")),
+      );
+    } catch (e) {
+      print("Hata: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Kullanıcı takipten çıkarılamadı.")),
+      );
+    }
   }
 
   @override
